@@ -3,8 +3,8 @@ package controller
 import (
 	"errors"
 	"github.com/labstack/echo/v4"
-	"github.com/maei/golang_hexagonal_architecture/src/serializer/json"
-	"github.com/maei/golang_hexagonal_architecture/src/service"
+	"github.com/maei/golang_hexagonal_architecture/src/serializer/sum_serializer/json"
+	"github.com/maei/golang_hexagonal_architecture/src/service/sum_service"
 	"io/ioutil"
 	"net/http"
 )
@@ -15,16 +15,16 @@ type SumControllerInterface interface {
 }
 
 type sumController struct {
-	sumService service.SumServiceInterface
+	sumService sum_service.SumServiceInterface
 }
 
-func NewSumController(service service.SumServiceInterface) SumControllerInterface {
+func NewSumController(service sum_service.SumServiceInterface) SumControllerInterface {
 	return &sumController{
 		sumService: service,
 	}
 }
 
-func (t *sumController) serializer() service.SumSerializerInterface {
+func (t *sumController) serializer() sum_service.SumSerializerInterface {
 	return &json.Serial{}
 }
 
@@ -55,7 +55,7 @@ func (t *sumController) FindResult(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
-	return c.JSON(http.StatusOK, map[string]*service.SumResponse{
+	return c.JSON(http.StatusOK, map[string]*sum_service.SumResponse{
 		"message": sumResp,
 	})
 }

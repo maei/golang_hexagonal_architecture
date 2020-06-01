@@ -1,4 +1,4 @@
-package service
+package sum_service
 
 import (
 	"github.com/teris-io/shortid"

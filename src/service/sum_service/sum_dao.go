@@ -1,4 +1,4 @@
-package service
+package sum_service
 
 import "context"
 

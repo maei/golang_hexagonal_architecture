@@ -1,4 +1,4 @@
-package service
+package sum_service
 
 type SumRequest struct {
 	A int64 `json:"a"`

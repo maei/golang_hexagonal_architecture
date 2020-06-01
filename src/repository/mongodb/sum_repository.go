@@ -3,7 +3,7 @@ package mongodb
 import (
 	"context"
 	"fmt"
-	"github.com/maei/golang_hexagonal_architecture/src/service"
+	"github.com/maei/golang_hexagonal_architecture/src/service/sum_service"
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"time"
@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	collection = "sum"
+	collection = "sum_service"
 )
 
 type mongoRepository struct {
@@ -37,7 +37,7 @@ func newMongoClient(mongoURL string, mongoTimeout int) (*mongo.Client, error) {
 	return client, nil
 }
 
-func NewMongoSumRepository(mongoURL, mongoDB string, mongoTimeout int) (service.SumRepositoryInterface, error) {
+func NewMongoSumRepository(mongoURL, mongoDB string, mongoTimeout int) (sum_service.SumRepositoryInterface, error) {
 	repo := &mongoRepository{
 		timeout:  time.Duration(mongoTimeout) * time.Second,
 		database: mongoDB,
@@ -50,7 +50,7 @@ func NewMongoSumRepository(mongoURL, mongoDB string, mongoTimeout int) (service.
 	return repo, nil
 }
 
-func (m *mongoRepository) Store(req *service.SumResult) error {
+func (m *mongoRepository) Store(req *sum_service.SumResult) error {
 	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
 	defer cancel()
 	collection := m.client.Database(m.database).Collection(collection)
@@ -61,10 +61,10 @@ func (m *mongoRepository) Store(req *service.SumResult) error {
 	return nil
 }
 
-func (m *mongoRepository) Find(code string) (*service.SumResult, error) {
+func (m *mongoRepository) Find(code string) (*sum_service.SumResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
 	defer cancel()
-	sumResult := &service.SumResult{}
+	sumResult := &sum_service.SumResult{}
 	collection := m.client.Database(m.database).Collection(collection)
 	filter := bson.M{"code": code}
 	err := collection.FindOne(ctx, filter).Decode(&sumResult)

@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/maei/golang_hexagonal_architecture/src/controller"
 	mr "github.com/maei/golang_hexagonal_architecture/src/repository/mongodb"
-	"github.com/maei/golang_hexagonal_architecture/src/service"
+	"github.com/maei/golang_hexagonal_architecture/src/service/sum_service"
 	"log"
 	"os"
 	"os/signal"
@@ -14,14 +14,14 @@ import (
 )
 
 func main() {
-	repo := repo()
-	service := service.NewSumService(repo)
+	repo := repoSumRepository()
+	service := sum_service.NewSumService(repo)
 	handler := controller.NewSumController(service)
 
 	router := echo.New()
 
-	router.POST("/sum", handler.NewCompute)
-	router.GET("/sum/:code", handler.FindResult)
+	router.POST("/sum_service", handler.NewCompute)
+	router.GET("/sum_service/:code", handler.FindResult)
 
 	errs := make(chan error, 2)
 	go func() {
@@ -49,12 +49,12 @@ func httpPort() string {
 	return fmt.Sprintf(":%s", port)
 }
 
-func repo() service.SumRepositoryInterface {
+func repoSumRepository() sum_service.SumRepositoryInterface {
 	//mongoURL := os.Getenv("MONGO_URL")
 	//mongodb := os.Getenv("MONGO_DB")
 	//mongoTimeout, _ := strconv.Atoi(os.Getenv("MONGO_TIMEOUT"))
 	mongoURL := "mongodb://localhost:27017"
-	mongodb := "sum"
+	mongodb := "sum_service"
 	mongoTimeout := 30
 	repo, err := mr.NewMongoSumRepository(mongoURL, mongodb, mongoTimeout)
 	if err != nil {
